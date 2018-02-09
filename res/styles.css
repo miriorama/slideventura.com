@@ -1,0 +1,45 @@
+html {
+  width: 100%;
+  height: 100%;
+}
+
+body {  
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+#container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+#img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  position: absolute;
+  width: 90vmin;
+  height: 90vmin;
+  max-width: 720px;
+  max-height: 720px;
+  overflow: hidden;
+  background-image: url('https://cdn.glitch.com/380ca7b9-524f-4f93-92f0-4b6594d33188%2Face.jpg?1516540516674');
+  background-size: auto 100%;
+}
+
+#text {
+  display: none;
+  font-family: sans-serif;
+  color: #fff;
+}
+
+#share {
+  position: absolute;
+  bottom: 0;
+}
+    
