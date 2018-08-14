@@ -43,3 +43,14 @@ body {
   bottom: 0;
 }
     
+#credits {
+  color: #fff;
+  font-family: sans-serif;
+  text-align: center;
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+#credits a {
+  color: #fff;
+}
