@@ -28,7 +28,7 @@ body {
   max-width: 720px;
   max-height: 720px;
   overflow: hidden;
-  background-image: url('slideventura.jpg');
+  background-image: url('/img/slideventura.jpg');
   background-size: auto 100%;
   background-position-y: center;
 }

@@ -17,7 +17,7 @@ var ACE = (function() {
     width: null
   };
 
-  let audio = new Audio('/res/slideventura.mp3');
+  let audio = new Audio('/js/slideventura.mp3');
   audio.loop = true;
   audio.volume = 0.5;
 
@@ -74,7 +74,6 @@ var ACE = (function() {
     currentX = UTIL.minMax(currentX - offsetLeft, 0, ACE.width);
 
     targetPosition = ACE.width - currentX;
-    console.log(targetPosition);
   }
 
   ace.animation = function() {
