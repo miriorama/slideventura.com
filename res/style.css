@@ -3,7 +3,7 @@ html {
   height: 100%;
 }
 
-body {  
+body {
   width: 100%;
   height: 100%;
   margin: 0;
@@ -21,15 +21,16 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  
+
   position: absolute;
   width: 90vmin;
   height: 90vmin;
   max-width: 720px;
   max-height: 720px;
   overflow: hidden;
-  background-image: url('https://cdn.glitch.com/380ca7b9-524f-4f93-92f0-4b6594d33188%2Face.jpg?1516540516674');
+  background-image: url('slideventura.jpg');
   background-size: auto 100%;
+  background-position-y: center;
 }
 
 #text {
@@ -42,7 +43,7 @@ body {
   position: absolute;
   bottom: 0;
 }
-    
+
 #credits {
   color: #fff;
   font-family: sans-serif;
