@@ -47,10 +47,7 @@ var ACE = (function() {
         $text.style.display = 'none';
       });
 
-      audio.play();
-      if (audio.paused) {
-        $text.style.display = 'block';
-      }
+      $text.style.display = 'block';
 
       requestAnimationFrame(ACE.animation);
   }
