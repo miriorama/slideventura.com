@@ -89,6 +89,7 @@ var ACE = (function() {
 
     if (currentStep > 0 && currentStep <= totalStep) {
       let volume = UTIL.map(Math.min(Math.max(currentStep - 4, 0), totalStep - 10), totalStep - 10, 0.5);
+      console.log(volume);
       audio.volume = volume;
     } else {
       audio.volume = 0;
