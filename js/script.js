@@ -60,11 +60,16 @@ var ACE = (function() {
   ace.move = function(e) {
     let currentX;
 
-    if (!isNaN(e.pageX)) {
+    if (typeof e.pageX === 'number' && !isNaN(e.pageX)) {
       currentX = e.pageX;
-    } else {
-      let touch = event.targetTouches[event.targetTouches.length-1];
+    } else if (e.touches && e.touches.length) {
+      let touch = e.touches[e.touches.length - 1];
       currentX = touch.pageX;
+    } else if (e.changedTouches && e.changedTouches.length) {
+      let touch = e.changedTouches[e.changedTouches.length - 1];
+      currentX = touch.pageX;
+    } else {
+      return;
     }
     let rect = $img.getBoundingClientRect();
     let offsetLeft = rect.left + window.scrollX;
