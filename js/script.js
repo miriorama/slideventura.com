@@ -67,21 +67,23 @@ var ACE = (function() {
             }
           });
 
-        let startAudio = async function() {
+        let startAudio = function() {
           if(isPlaying){
             return;
           }
           isPlaying = true;
-          await audioContext.resume();
-          await bufferSource.start(0);
 
+          console.log('start');
           $text.style.display = 'none';
-          //$body.removeEventListener('click', startAudio);
-          //$body.removeEventListener('touchstart', startAudio);
+          audioContext.resume().then(() => {
+            bufferSource.start(0);
+          });
+
+
+          $body.removeEventListener('click', startAudio);
         };
 
-      $body.addEventListener('click', startAudio);
-      $body.addEventListener('touchstart', startAudio);
+      document.querySelector('#img').addEventListener('click', startAudio);
 
       $text.style.display = 'block';
 
@@ -123,23 +125,18 @@ var ACE = (function() {
 
     $img.style.backgroundPositionX =  backgroundPosition + 'px';
 
-    if (currentStep > 0 && currentStep <= totalStep) {
+    if(isPlaying){
+      if (currentStep > 0 && currentStep <= totalStep) {
       let level = UTIL.map(Math.min(Math.max(currentStep - 4, 0), totalStep - 10), totalStep - 10, 0.5);
 
       gainNode.gain.value = level;
     } else {
       gainNode.gain.value = 0;
     }
-    requestAnimationFrame(ACE.animation);
-  }
-
-  function ensureFallbackAudio() {
-    if (!fallbackAudio) {
-      fallbackAudio = new Audio(AUDIO_URL);
-      fallbackAudio.loop = true;
-      fallbackAudio.volume = 0;
     }
-    return fallbackAudio;
+
+
+    requestAnimationFrame(ACE.animation);
   }
 
   function loadAudioBuffer() {
