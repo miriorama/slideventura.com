@@ -17,9 +17,15 @@ var ACE = (function() {
     width: null
   };
 
-  let audio = new Audio('/js/slideventura.mp3');
-  audio.loop = true;
-  audio.volume = 0.5;
+  const AUDIO_URL = '/js/slideventura.mp3';
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  let webAudioSupported = !!AudioContextClass;
+  let audioContext = null;
+  let gainNode = null;
+  let audioBuffer = null;
+  let bufferSource = null;
+  let loadAudioPromise = null;
+  let isPlaying = false;
 
   var $text = document.getElementById('text');
   var currentPosition = 0;
@@ -42,10 +48,40 @@ var ACE = (function() {
       $body.addEventListener('mousemove', ACE.move);
       $body.addEventListener('touchmove', ACE.move);
 
-      $body.addEventListener('click', function() {
-        audio.play();
-        $text.style.display = 'none';
-      });
+      try {
+        audioContext = new AudioContext();
+        gainNode = audioContext.createGain();
+        gainNode.gain.value = 0;
+        gainNode.connect(audioContext.destination);
+      } catch (err) {
+        audioContext = null;
+        gainNode = null;
+      }
+
+      loadAudioBuffer().then(function() {
+            if (!bufferSource && audioBuffer) {
+              bufferSource = audioContext.createBufferSource();
+              bufferSource.buffer = audioBuffer;
+              bufferSource.loop = true;
+              bufferSource.connect(gainNode);
+            }
+          });
+
+        let startAudio = async function() {
+          if(isPlaying){
+            return;
+          }
+          isPlaying = true;
+          await audioContext.resume();
+          await bufferSource.start(0);
+
+          $text.style.display = 'none';
+          //$body.removeEventListener('click', startAudio);
+          //$body.removeEventListener('touchstart', startAudio);
+        };
+
+      $body.addEventListener('click', startAudio);
+      $body.addEventListener('touchstart', startAudio);
 
       $text.style.display = 'block';
 
@@ -88,13 +124,52 @@ var ACE = (function() {
     $img.style.backgroundPositionX =  backgroundPosition + 'px';
 
     if (currentStep > 0 && currentStep <= totalStep) {
-      let volume = UTIL.map(Math.min(Math.max(currentStep - 4, 0), totalStep - 10), totalStep - 10, 0.5);
-      console.log(volume);
-      audio.volume = volume;
+      let level = UTIL.map(Math.min(Math.max(currentStep - 4, 0), totalStep - 10), totalStep - 10, 0.5);
+
+      gainNode.gain.value = level;
     } else {
-      audio.volume = 0;
+      gainNode.gain.value = 0;
     }
     requestAnimationFrame(ACE.animation);
+  }
+
+  function ensureFallbackAudio() {
+    if (!fallbackAudio) {
+      fallbackAudio = new Audio(AUDIO_URL);
+      fallbackAudio.loop = true;
+      fallbackAudio.volume = 0;
+    }
+    return fallbackAudio;
+  }
+
+  function loadAudioBuffer() {
+    if (!audioContext) {
+      return Promise.reject();
+    }
+    if (audioBuffer) {
+      return Promise.resolve(audioBuffer);
+    }
+    if (loadAudioPromise) {
+      return loadAudioPromise;
+    }
+    loadAudioPromise = fetch(AUDIO_URL)
+      .then(function(response) {
+        return response.arrayBuffer();
+      })
+      .then(function(arrayBuffer) {
+        return new Promise(function(resolve, reject) {
+          audioContext.decodeAudioData(arrayBuffer, resolve, reject);
+        });
+      })
+      .then(function(decodedBuffer) {
+        audioBuffer = decodedBuffer;
+        return audioBuffer;
+      })
+      .catch(function(error) {
+        loadAudioPromise = null;
+        throw error;
+      });
+    return loadAudioPromise;
   }
 
   return ace;
